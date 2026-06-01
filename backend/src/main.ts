@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -9,14 +6,14 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
     }),
   );
-
-  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('UMKM Grow API')
@@ -29,12 +26,15 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
 
-  const port = Number(process.env.PORT) || 8080;
+  const port = Number(process.env.PORT || 8080);
 
   await app.listen(port, '0.0.0.0');
 
   console.log(`🚀 Server running on port ${port}`);
-  console.log(`📚 Swagger: /api`);
+  console.log(`📚 Swagger available at /api`);
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('BOOTSTRAP ERROR');
+  console.error(err);
+});
