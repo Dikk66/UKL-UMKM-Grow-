@@ -30,10 +30,14 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
+  console.log(
+    'Swagger path count:',
+    Object.keys(document.paths).length,
+  );
+
   SwaggerModule.setup('api', app, document);
 
-  // Debug Log
-  console.log('SWAGGER VERSION ACTIVE');
+  console.log('SWAGGER SETUP SUCCESS');
 
   const port = process.env.PORT || 3000;
 
