@@ -9,7 +9,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Validation DTO
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -17,10 +16,8 @@ async function bootstrap() {
     }),
   );
 
-  // CORS
   app.enableCors();
 
-  // Swagger Configuration
   const config = new DocumentBuilder()
     .setTitle('UMKM Grow API')
     .setDescription('Dokumentasi API UMKM Grow')
@@ -30,26 +27,19 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
+  SwaggerModule.setup('api', app, document);
+
+  console.log('SWAGGER SETUP SUCCESS');
   console.log(
     'Swagger path count:',
     Object.keys(document.paths).length,
   );
 
-  SwaggerModule.setup('api', app, document);
+  const port = Number(process.env.PORT) || 3000;
 
-  console.log('SWAGGER SETUP SUCCESS');
+  await app.listen(port, '0.0.0.0');
 
-  const port = process.env.PORT || 3000;
-
-  await app.listen(port);
-
-  console.log(
-    `🚀 Backend UMKM Grow siap menerima request di port ${port}`,
-  );
-
-  console.log(
-    `📚 Swagger Documentation: http://localhost:${port}/api`,
-  );
+  console.log(`🚀 Server running on port ${port}`);
 }
 
 void bootstrap();
