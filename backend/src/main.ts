@@ -9,6 +9,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Validation DTO
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -16,6 +17,7 @@ async function bootstrap() {
     }),
   );
 
+  // CORS
   app.enableCors();
 
   // Swagger Configuration
@@ -29,6 +31,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, document);
+
+  // Debug Log
+  console.log('SWAGGER VERSION ACTIVE');
 
   const port = process.env.PORT || 3000;
 
