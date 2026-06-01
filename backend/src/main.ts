@@ -29,17 +29,12 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
 
-  console.log('SWAGGER SETUP SUCCESS');
-  console.log(
-    'Swagger path count:',
-    Object.keys(document.paths).length,
-  );
-
-  const port = Number(process.env.PORT) || 3000;
+  const port = Number(process.env.PORT) || 8080;
 
   await app.listen(port, '0.0.0.0');
 
   console.log(`🚀 Server running on port ${port}`);
+  console.log(`📚 Swagger: /api`);
 }
 
-void bootstrap();
+bootstrap();
