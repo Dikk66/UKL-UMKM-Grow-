@@ -1,21 +1,46 @@
 import * as dotenv from 'dotenv';
-// Wajib di baris pertama sebelum import lainnya!
 dotenv.config();
 
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  // Mengaktifkan global validation untuk DTO
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  
-  // Mengaktifkan CORS agar bisa diakses oleh Frontend nantinya
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
+
   app.enableCors();
 
-  await app.listen(3000);
-  console.log('🚀 Backend UMKM Grow siap menerima request di: http://localhost:3000');
+  // Swagger Configuration
+  const config = new DocumentBuilder()
+    .setTitle('UMKM Grow API')
+    .setDescription('Dokumentasi API UMKM Grow')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('api', app, document);
+
+  const port = process.env.PORT || 3000;
+
+  await app.listen(port);
+
+  console.log(
+    `🚀 Backend UMKM Grow siap menerima request di port ${port}`,
+  );
+
+  console.log(
+    `📚 Swagger Documentation: http://localhost:${port}/api`,
+  );
 }
-bootstrap();
+
+void bootstrap();
